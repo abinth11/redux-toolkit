@@ -1,20 +1,34 @@
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import { increment,decrement } from "./features/counter/counter-slice";
+import { useState, ChangeEvent } from "react";
+import {
+  increment,
+  decrement,
+  addCount,
+} from "./features/counter/counter-slice";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import "./App.css";
 
 function App() {
-  // const [count, setCount] = useState(0)
+  const [inputValue, setInputValue] = useState<number>(0);
   const count = useAppSelector((state) => state.counter.value);
   const dispatch = useAppDispatch();
   const handleIncrement = () => {
     dispatch(increment());
   };
-  const handleDecrement = () =>{
-    dispatch(decrement())
+  const handleDecrement = () => {
+    dispatch(decrement());
+  };
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.target.value;
+    const parsedInput = input.trim() !== '' ? Number(input) : 0;
+    setInputValue(parsedInput);
+  };
+  
+  const handleAdd = () => {
+    dispatch(addCount(inputValue));
+  };
 
-  }
   return (
     <>
       <div>
@@ -27,20 +41,21 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className='card'>
-        <button style={{marginRight:"5px"}} onClick={handleDecrement}> - </button>
+        <button style={{ marginRight: "5px" }} onClick={handleDecrement}>
+          {" "}
+          -{" "}
+        </button>
         <button>count is {count}</button>
         <button style={{ marginLeft: "5px" }} onClick={handleIncrement}>
           +
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        </button>        
       </div>
-      <p className='read-the-docs'>
-        Click on the Vite and React logos to learn more
-      </p>
+      <div>
+      <input className="count-input" type='number' value={inputValue===0?'':inputValue} onChange={handleChange} />
+        <button onClick={handleAdd}>add</button>
+      </div>
     </>
-  );
+  );    
 }
 
 export default App;
